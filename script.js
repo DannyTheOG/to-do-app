@@ -20,6 +20,7 @@ showCompletedButton.addEventListener( "click", () => renderFilteredTasks( "compl
 
 const tasks = [];
 
+// add new task to the tasks array
 function addNewTask() {
     let taskName = taskInput.value.trim();
 
@@ -65,30 +66,46 @@ function renderTasks( filteredTasks ) {
     });
 }
 
+// delete task
 function deleteTask( index ) {
     tasks[index].deleted = true
     renderFilteredTasks( "all" );
 }
 
+// toggle completed task
 function toggleCompleted( index ) {
     tasks[index].completed = !tasks[index].completed
     renderFilteredTasks( "all" );
 }
 
+// filter tasks based on the filterType and set the active button color
 function filterTasks( filterType ) {
+    resetActiveButton();
+
     switch( filterType ) {
         case "all":
+            showAllButton.style.backgroundColor = "#2d3033"
             return tasks.filter( task => !task.deleted );
         case "active":
+            showActiveButton.style.backgroundColor = "#2d3033"
             return tasks.filter( task => !task.completed && !task.deleted );
         case "completed":
+            showCompletedButton.style.backgroundColor = "#2d3033"
             return tasks.filter( task => task.completed && !task.deleted );
         default:
             return [];
     }
 }
 
+// render filtered tasks based on the filterType
 function renderFilteredTasks( filterType ) {
     const filteredTasks = filterTasks( filterType );
     renderTasks( filteredTasks );
+}
+
+// reset the active button to default color
+function resetActiveButton() {
+    showAllButton.style.backgroundColor = "#007BFF"
+    showActiveButton.style.backgroundColor = "#007BFF"
+    showCompletedButton.style.backgroundColor = "#007BFF"
 }
