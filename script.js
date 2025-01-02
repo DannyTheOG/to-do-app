@@ -2,13 +2,12 @@
 const taskInput = document.getElementById( "taskInput" );
 const addTask = document.getElementById( "addTask" );
 const taskList = document.getElementById( "taskList" );
-const showCompletedCheckbox = document.getElementById( "showCompleted" );
+const showAllButton = document.getElementById( "showAll" );
+const showActiveButton = document.getElementById( "showActive" );
+const showCompletedButton = document.getElementById( "showCompleted" );
 
 
 addTask.addEventListener( "click", addNewTask );
-
-// render tasks when user clicks on the checkbox
-showCompletedCheckbox.addEventListener( "change", () => renderTasks() );
 
 const tasks = [];
 
@@ -26,25 +25,19 @@ function addNewTask() {
 
     taskInput.value = "";
 
-    renderTasks()
+    renderFilteredTasks( "all" );
 }
 
-function renderTasks() {
+function renderTasks( filteredTasks ) {
     console.log( tasks )
     // reset the task list
    taskList.innerHTML = "" 
 
-   // get the value of showCompletedCheckbox
-   const showCompleted = showCompletedCheckbox.checked
-
     // iterate over the tasks array
-    for ( const [index, task] of tasks.entries() ) {
+    filteredTasks.forEach( task => {
         const { taskTitle, completed, deleted } = task
 
-        // not deleted, if show completed display all, else display not completed
-        if( !deleted && ( showCompleted || !completed ) ) { 
-            // create li
-            // add checkbox, taskTitle, button
+            // create li element, add checkbox, taskTitle, button
             let taskItem = document.createElement( "li" )
             taskItem.innerHTML = `
                 <input type = "checkbox" ${completed ? "checked" : ""}>
@@ -53,23 +46,40 @@ function renderTasks() {
             `
             // add eventListeners
             const deleteButton = taskItem.querySelector( ".delete" )
-            deleteButton.addEventListener( "click", () => deleteTask( index ) )
+            deleteButton.addEventListener( "click", () => deleteTask( tasks.indexOf( task ) ) )
 
             const checkbox = taskItem.querySelector( "input[type = 'checkbox']" )
-            checkbox.addEventListener( "change", () => toggleCompleted( index ) )
+            checkbox.addEventListener( "change", () => toggleCompleted( tasks.indexOf( task ) ) )
 
             // add to the list
             taskList.appendChild( taskItem )
-        }
-    }
+    });
 }
 
 function deleteTask( index ) {
     tasks[index].deleted = true
-    renderTasks()
+    renderFilteredTasks( "all" );
 }
 
 function toggleCompleted( index ) {
     tasks[index].completed = !tasks[index].completed
-    renderTasks()
+    renderFilteredTasks( "all" );
+}
+
+function filterTasks( filterType ) {
+    switch( filterType ) {
+        case "all":
+            return tasks.filter( task => !task.deleted );
+        case "active":
+            return tasks.filter( task => !task.completed && !task.deleted );
+        case "completed":
+            return tasks.filter( task => task.completed && !task.deleted );
+        default:
+            return [];
+    }
+}
+
+function renderFilteredTasks( filterType ) {
+    const filteredTasks = filterTasks( filterType );
+    renderTasks( filteredTasks );
 }
