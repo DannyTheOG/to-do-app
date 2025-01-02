@@ -6,8 +6,17 @@ const showAllButton = document.getElementById( "showAll" );
 const showActiveButton = document.getElementById( "showActive" );
 const showCompletedButton = document.getElementById( "showCompleted" );
 
+// add click event listener to the Add Task button
+addTask.addEventListener( "click", () => addNewTask() );
 
-addTask.addEventListener( "click", addNewTask );
+// add click event listener to the Show All button
+showAllButton.addEventListener( "click", () => renderFilteredTasks( "all") );
+
+// add click event listener to the Show Active button
+showActiveButton.addEventListener( "click", () => renderFilteredTasks( "active") );
+
+// add click event listener to the Show Completed button
+showCompletedButton.addEventListener( "click", () => renderFilteredTasks( "completed") );
 
 const tasks = [];
 
