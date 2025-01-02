@@ -10,8 +10,22 @@
 <body>
     <div id="app">
         <h1>To-Do App</h1>
-        <input type="text" id="taskInput" placeholder="Enter the name of task" required>
-        <button id="addTask">ADD TASK</button>
+        <button id = "addTask">ADD TASK</button>
+        <form id = "addTaskForm" style = "display: none;">
+            <label for = "taskName">Task name:</label><br>
+            <input type = "text" id = "taskName" name = "taskName" required><br>
+
+            <label for = "taskDesc">Task name:</label><br>
+            <textarea type = "text" id = "taskDesc" name = "taskDesc" required></textarea><br>
+
+            <label for = "taskDueDate">Due Date:</label><br>
+            <input type = "date" id = "taskDueDate" name="taskDueDate" required><br>
+
+            <label for = "taskDueTime">Due Time:</label><br>
+            <input type = "time" id = "taskDueTime" name="taskDueTime" required><br>
+
+            <button type = "submit" id = "submitTask">Submit</button>
+        </form>
         <p>
             <i>Tick the checkbox against completed tasks</i>
         </p>
@@ -20,9 +34,16 @@
             <button id = "showActive">ACTIVE</button>
             <button id = "showCompleted">COMPLETED</button>
         </div>
-        <ul id="taskList">
-
-        </ul>
+        <table>
+            <thead>
+                <th>Completed</th>
+                <th>Task Name</th>
+                <th>Description</th>
+                <th>Due Date and Time</th>
+                <th>Action</th>
+            </thead>
+            <tbody id="taskList"> </tbody>
+        </table>
     </div>
 </body>
 </html>
