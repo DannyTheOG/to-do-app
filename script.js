@@ -5,9 +5,25 @@ const taskList = document.getElementById( "taskList" );
 const showAllButton = document.getElementById( "showAll" );
 const showActiveButton = document.getElementById( "showActive" );
 const showCompletedButton = document.getElementById( "showCompleted" );
+const addTaskForm = document.getElementById( "addTaskForm" );
+
 
 // add click event listener to the Add Task button
-addTask.addEventListener( "click", () => addNewTask() );
+addTask.addEventListener( "click", () => {
+    addTaskForm.style.display === "none" ? addTaskForm.style.display = "" : addTaskForm.style.display = "none";
+} );
+
+addTaskForm.addEventListener( "submit", ( event ) => {
+    event.preventDefault();
+
+    const { taskName, taskDesc, taskDueDateAndTime } = getTaskFormVAlues();
+
+    addNewTask( { taskName, taskDesc, taskDueDateAndTime } );
+
+    addTaskForm.reset();
+
+    addTaskForm.style.display = "none";
+} );
 
 // add click event listener to the Show All button
 showAllButton.addEventListener( "click", () => renderFilteredTasks( "all") );
@@ -21,19 +37,18 @@ showCompletedButton.addEventListener( "click", () => renderFilteredTasks( "compl
 const tasks = [];
 
 // add new task to the tasks array
-function addNewTask() {
-    let taskName = taskInput.value.trim();
-
+function addNewTask( { taskName, taskDesc, taskDueDateAndTime }) {
     if( taskName === "" ) return;
 
     const newTask = {
-        taskTitle: taskName,
+        taskName,
+        taskDesc,
+        taskDueDateAndTime,
         completed: false,
         deleted: false
     }
-    tasks.push( newTask )
 
-    taskInput.value = "";
+    tasks.push( newTask )
 
     renderFilteredTasks( "all" );
 }
@@ -45,14 +60,17 @@ function renderTasks( filteredTasks ) {
 
     // iterate over the tasks array
     filteredTasks.forEach( task => {
-        const { taskTitle, completed, deleted } = task
+        const { taskName, taskDesc, taskDueDateAndTime, completed, deleted } = task
 
             // create li element, add checkbox, taskTitle, button
-            let taskItem = document.createElement( "li" )
+            let taskItem = document.createElement( "tr" );
+            taskItem.className = `task ${completed ? "completed" : ""}`;
             taskItem.innerHTML = `
-                <input type = "checkbox" ${completed ? "checked" : ""}>
-                <span class = "task ${completed ? "completed" : ""}">${taskTitle}</span>
-                <button class = "delete">DELETE</button>
+                <td><input type = "checkbox" ${completed ? "checked" : ""}></td>
+                <td>${taskName}</td>
+                <td>${taskDesc}</td>
+                <td>${taskDueDateAndTime}</td>
+                <td><button class = "delete">DELETE</button></td>
             `
             // add eventListeners
             const deleteButton = taskItem.querySelector( ".delete" )
@@ -108,4 +126,15 @@ function resetActiveButton() {
     showAllButton.style.backgroundColor = "#007BFF"
     showActiveButton.style.backgroundColor = "#007BFF"
     showCompletedButton.style.backgroundColor = "#007BFF"
+}
+
+function getTaskFormVAlues() {
+    const taskName = document.getElementById( "taskName" ).value.trim();
+    const taskDesc = document.getElementById( "taskDesc" ).value.trim();
+    const taskDueDate = document.getElementById( "taskDueDate" ).value.trim();
+    const taskDueTime = document.getElementById( "taskDueTime" ).value.trim();
+
+    const taskDueDateAndTime = new Date( taskDueDate + "T" + taskDueTime ).toLocaleString();
+
+    return { taskName, taskDesc, taskDueDateAndTime };
 }
