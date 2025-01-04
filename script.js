@@ -7,6 +7,9 @@ const showActiveButton = document.getElementById( "showActive" );
 const showCompletedButton = document.getElementById( "showCompleted" );
 const addTaskForm = document.getElementById( "addTaskForm" );
 
+// get tasks from the localStorage
+const tasks = localStorage.getItem( "tasks" ) ? JSON.parse( localStorage.getItem( "tasks" ) ) : [];
+
 
 // add click event listener to the Add Task button
 addTask.addEventListener( "click", () => {
@@ -34,9 +37,8 @@ showActiveButton.addEventListener( "click", () => renderFilteredTasks( "active")
 // add click event listener to the Show Completed button
 showCompletedButton.addEventListener( "click", () => renderFilteredTasks( "completed") );
 
-const tasks = [];
 
-// add new task to the tasks array
+// add new task to the tasks array in the localStorage
 function addNewTask( { taskName, taskDesc, taskDueDateAndTime }) {
     if( taskName === "" ) return;
 
@@ -48,11 +50,13 @@ function addNewTask( { taskName, taskDesc, taskDueDateAndTime }) {
         deleted: false
     }
 
-    tasks.push( newTask )
+    tasks.push( newTask );
+    saveTasksToLocalStorage( tasks );
 
     renderFilteredTasks( "all" );
 }
 
+// render tasks
 function renderTasks( filteredTasks ) {
     console.log( tasks )
     // reset the task list
@@ -86,13 +90,15 @@ function renderTasks( filteredTasks ) {
 
 // delete task
 function deleteTask( index ) {
-    tasks[index].deleted = true
+    tasks[index].deleted = true;
+    saveTasksToLocalStorage( tasks );
     renderFilteredTasks( "all" );
 }
 
 // toggle completed task
 function toggleCompleted( index ) {
-    tasks[index].completed = !tasks[index].completed
+    tasks[index].completed = !tasks[index].completed;
+    saveTasksToLocalStorage( tasks );
     renderFilteredTasks( "all" );
 }
 
@@ -128,6 +134,7 @@ function resetActiveButton() {
     showCompletedButton.style.backgroundColor = "#007BFF"
 }
 
+// get the values from the task form
 function getTaskFormVAlues() {
     const taskName = document.getElementById( "taskName" ).value.trim();
     const taskDesc = document.getElementById( "taskDesc" ).value.trim();
@@ -137,4 +144,9 @@ function getTaskFormVAlues() {
     const taskDueDateAndTime = new Date( taskDueDate + "T" + taskDueTime ).toLocaleString();
 
     return { taskName, taskDesc, taskDueDateAndTime };
+}
+
+// save tasks to the localStorage
+function saveTasksToLocalStorage( tasks ) {
+    localStorage.setItem( "tasks", JSON.stringify( tasks ) );
 }
